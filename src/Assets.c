@@ -201,6 +201,6 @@ void UpdateSlider(Slider *slider) {
     DrawRectangleRec(slider->knob, DARKGRAY);
 
     char label[100];
-    sprintf(label, "%s: %.2lf", slider->label, *slider->value);
+    sprintf(label, "%s: %.4lf", slider->label, *slider->value);
     DrawText(label, slider->track.x, slider->track.y + slider->track.height, 20, RAYWHITE);
 }
