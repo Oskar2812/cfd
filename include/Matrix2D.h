@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <stdbool.h>
+
 typedef struct {
     int columns, rows;
     double* values;
@@ -28,7 +30,10 @@ double getLowerElement(Matrix2D* L, int i, int j);
 double getUpperElement(Matrix2D* U, int i, int j);
 
 Matrix2D LUDecomposition(Matrix2D* A);
+Matrix2D invertLU(Matrix2D* A, bool triFlag);
 
-Matrix2D invertLU(Matrix2D* A);
+Matrix2D triLUDecomposition(Matrix2D* A);
+
+bool isTriDiagonal(Matrix2D* A);
 
 #endif

@@ -9,14 +9,14 @@ set(HEADERS
     include/PDESolver.h
     include/Assets.h
     include/Visualise.h
-    include/Matrix.h)
+    include/Matrix2D.h)
 
 set(SOURCES
     src/Grid1D.c
     src/PDESolver.c
     src/Assets.c
     src/Visualise.c
-    src/Matrix.c)
+    src/Matrix2D.c)
 
 link_directories(raylib-5.0_linux_amd64/lib)
 

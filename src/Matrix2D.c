@@ -1,4 +1,4 @@
-#include "../include/Matrix.h"
+#include "../include/Matrix2D.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -154,8 +154,15 @@ Matrix2D LUDecomposition(Matrix2D* A) {
     return result;
 }
 
-Matrix2D invertLU(Matrix2D* A){
-    Matrix2D LU = LUDecomposition(A);
+Matrix2D invertLU(Matrix2D* A, bool triFlag){
+
+    Matrix2D LU = newMatrix(A->rows, A->columns);
+
+    if(triFlag){
+        LU = triLUDecomposition(A);
+    } else {
+        LU = LUDecomposition(A);
+    }
 
     int n = A->rows;
     Matrix2D y = newMatrix(n, 1);
@@ -191,4 +198,58 @@ Matrix2D invertLU(Matrix2D* A){
     freeMatrix(&LU);
 
     return inverse;
+}
+
+Matrix2D triLUDecomposition(Matrix2D* A) {
+    if (A->columns != A->rows) {
+        printf("Error: Matrix needs to be square for LU decomposition\n");
+        exit(EXIT_FAILURE);
+    }
+
+    int n = A->rows;
+    Matrix2D U = newMatrix(n, n);
+    Matrix2D L = newIdentity(n);
+
+    setElement(&U, 0, 0, *getElement(A, 0, 0));
+    if (n > 1) {
+        setElement(&U, 0, 1, *getElement(A, 0, 1));
+    }
+
+    
+    for (int ii = 1; ii < n; ii++) {
+        setElement(&L, ii, ii - 1, (*getElement(A, ii, ii - 1)) / (*getElement(&U, ii - 1, ii - 1)));  
+        setElement(&U, ii, ii, (*getElement(A, ii, ii)) - (*getElement(&L, ii, ii - 1)) * (*getElement(&U, ii - 1, ii)));
+
+        if (ii < n - 1) {
+            setElement(&U, ii, ii + 1, *getElement(A, ii, ii + 1));
+        }
+    }
+
+    Matrix2D result = newMatrix(n, n);
+    for (int ii = 0; ii < n; ii++) {
+        for (int jj = 0; jj < n; jj++) {
+            if (ii <= jj) {
+                setElement(&result, ii, jj, *getElement(&U, ii, jj));
+            } else {
+                setElement(&result, ii, jj, *getElement(&L, ii, jj));
+            }
+        }
+    }
+
+    // Cleanup
+    freeMatrix(&U);
+    freeMatrix(&L);
+
+    return result;
+}
+
+bool isTriDiagonal(Matrix2D* A){
+    for(int ii = 0; ii < A->rows; ii++){
+        for(int jj = 0; jj < A->columns; jj++){
+            if(jj < ii - 1 && *getElement(A,ii,jj) != 0) return false;
+            if(jj > ii + 1 && *getElement(A, ii, jj) != 0) return false;
+        }
+    }
+
+    return true;
 }
