@@ -71,6 +71,8 @@ void visualiseExplicit1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, in
 }
 
 void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, int, double), Matrix2D* A){
+
+    bool triFlag = isTriDiagonal(A);
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(800, 600, "Implicit PDE Solver 1D");
 
@@ -106,7 +108,7 @@ void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, in
     while(!WindowShouldClose()){
         SetTargetFPS((int)fps);
         if(runFlag || stepFlag){
-            implicitSolver1D(grid, dt, A, implicit);
+            implicitSolver1D(grid, dt, A, implicit, triFlag);
             stepFlag = false;
         }
         BeginDrawing();
