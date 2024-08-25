@@ -8,6 +8,8 @@ void visualiseExplicit1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, in
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(800, 600, "Explicit PDE Solver 1D");
 
+    double fps = 60;
+
     Grid1D origGrid = copyGrid1D(grid);
 
     bool runFlag = false, stepFlag = false;
@@ -33,8 +35,10 @@ void visualiseExplicit1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, in
     };
 
     Slider dtSlider = CreateSlider(30, 550, 100, 10, 0, dt*2, &dt, "dt");
+    Slider fpsSlider = CreateSlider(150, 550, 100, 10, 0, 240, &fps, "Speed");
 
     while(!WindowShouldClose()){
+        SetTargetFPS((int)fps);
         if(runFlag || stepFlag){
             explicitSolver1D(grid, dt, explicit);
             stepFlag = false;
@@ -42,6 +46,10 @@ void visualiseExplicit1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, in
         BeginDrawing();
         ClearBackground(BLACK);
         drawGraph(grid->values, grid->length, (Vector2) {0,0}, (Vector2) {700,500}, "Solution");
+
+        char text[100];
+        sprintf(text, "Calculations per second: %d", GetFPS());
+        DrawText(text,5,5,20, RAYWHITE);
 
         if(*runButton.flag){
             runButton.color = (Color) {200,200,200,255};
@@ -54,6 +62,7 @@ void visualiseExplicit1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, in
         drawButton(&resetButton);
 
         UpdateSlider(&dtSlider);
+        UpdateSlider(&fpsSlider);
 
         if(IsButtonClicked(&runButton)){
             *runButton.flag = !*runButton.flag;
@@ -102,7 +111,7 @@ void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, in
         .color = (Color){200,200,200,128},
     };
 
-    Slider dtSlider = CreateSlider(30, 550, 100, 10, 0, dt*2, &dt, "dt");
+    Slider dtSlider = CreateSlider(30, 550, 100, 10, 0, dt*5, &dt, "dt");
     Slider fpsSlider = CreateSlider(150, 550, 100, 10, 0, 240, &fps, "Speed");
 
     while(!WindowShouldClose()){
