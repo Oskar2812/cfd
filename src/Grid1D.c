@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Grid1D newGrid1D(int length, double dx, bool dirFlag, ...){
+Grid1D newGrid1D(int length, double dx, double a, double b){
     Grid1D result;
 
     result.length = length;
@@ -19,20 +19,9 @@ Grid1D newGrid1D(int length, double dx, bool dirFlag, ...){
         result.values[ii] = 0;
     }
 
-    result.dirFlag = dirFlag;
+    result.boundaries[0] = a;
+    result.boundaries[1] = b;
 
-    if(dirFlag){
-        va_list args;
-        va_start(args, dirFlag);
-
-        double a  = va_arg(args, double);
-        double b = va_arg(args, double);
-
-        result.boundaries[0] = a;
-        result.boundaries[1] = b;
-
-        va_end(args);
-    }
     return result;
 }
 
@@ -41,12 +30,7 @@ void freeGrid1D(Grid1D* grid){
 }
 
 Grid1D copyGrid1D(Grid1D* grid){
-     Grid1D result;
-    if(grid->dirFlag){
-        result = newGrid1D(grid->length, grid->dx, grid->dirFlag, grid->boundaries[0], grid->boundaries[1]);
-    } else {
-        result = newGrid1D(grid->length, grid->dx, grid->dirFlag);
-    }
+    Grid1D result = newGrid1D(grid->length, grid->dx, grid->boundaries[0], grid->boundaries[1]);
 
     for(int ii = 0; ii < result.length; ii++){
         result.values[ii] = grid->values[ii];

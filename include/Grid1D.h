@@ -11,11 +11,10 @@ typedef struct {
     double dx;
     double* values;
     double boundaries[2];
-    bool dirFlag;
 
 } Grid1D;
 
-Grid1D newGrid1D(int length, double dx, bool dirFlag, ...);
+Grid1D newGrid1D(int length, double dx, double a, double b);
 void freeGrid1D(Grid1D* grid);
 
 Grid1D copyGrid1D(Grid1D* grid);

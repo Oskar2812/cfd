@@ -9,12 +9,9 @@ void explicitSolver1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, int, 
     for(int ii = 0; ii < grid->length; ii++){
         grid->values[ii] = explicit(&oldGrid, ii, dt);
     }
-
-    if(grid->dirFlag){
-        grid->values[0] = grid->boundaries[0];
-        grid->values[grid->length - 1] = grid->boundaries[1];
-    }
-
+    grid->values[0] = grid->boundaries[0];
+    grid->values[grid->length - 1] = grid->boundaries[1];
+    
     freeGrid1D(&oldGrid);
 }
 
