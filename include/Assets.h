@@ -27,8 +27,11 @@ bool IsButtonClicked(Button *button);
 bool isScreenLeftClicked(int width, int height);
 bool isScreenRightClicked(int width, int height);
 
+Color scaledColor(double val, double max, double min);
+
 void drawGraph(double* datapoints, int points, Vector2 pos, Vector2 size, char* label);
 //void drawHist(Histogram* hist, Vector pos, Vector size, char* label);
+void drawGraph2D(double* datapoints, int xPoints, int yPoints, Vector2 pos, Vector2 size, char* label);
 
 Slider CreateSlider(double x, double y, double width, double height, double minValue, double maxValue, double* defaultValue, char* label);
 void UpdateSlider(Slider *slider);

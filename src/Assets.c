@@ -59,6 +59,47 @@ void drawGraph(double* datapoints, int points, Vector2 pos, Vector2 size, char* 
     }  
 }
 
+Color scaledColor(double val, double max, double min){
+    double normVal = (val - min) / (max - min);
+
+    double red = (255 * normVal);
+    double blue = (255 * (1 - normVal));
+
+    return (Color){red, 0, blue, 255};
+}
+
+void drawGraph2D(double* datapoints, int xPoints, int yPoints, Vector2 pos, Vector2 size, char* label){
+    const int offset = 30;
+    
+    
+    int start = 0;
+    double max = datapoints[start];
+    double min = datapoints[start];
+    for(int ii = start; ii < xPoints * yPoints; ii++){
+        if(datapoints[ii] > max){
+            max = datapoints[ii];
+        }
+        if(datapoints[ii] < min){
+            min = datapoints[ii];
+        }
+    }
+
+    double dx = (size.x - 2*offset) / xPoints;
+    double dy = (size.y - 2*offset) / yPoints;
+
+    for(int ii = 0; ii < yPoints; ii++){
+        for(int jj = 0; jj < xPoints; jj++){
+            Color c = scaledColor(datapoints[ii * xPoints + jj], max, min);
+            DrawRectangle(pos.x + offset + jj*dx, pos.y + offset + ii*dy, dx, dy, c);
+        }
+    }
+    DrawLine(pos.x + offset, pos.y + offset, pos.x + offset, pos.y + size.y - offset, RAYWHITE);
+    DrawLine(pos.x + offset, pos.y + size.y - offset, pos.x + size.x - offset, pos.y + size.y - offset, RAYWHITE);
+
+    DrawText(label, pos.x + offset + 10, pos.y + size.y - offset + 10, 10, RAYWHITE);
+
+}
+
 // void drawHist(Histogram* hist, Vector pos, Vector size, char* label){
 //     const int offset = 30;
 //     DrawLine(pos.x + offset, pos.y + offset, pos.x + offset, pos.y + size.y - offset, RAYWHITE);

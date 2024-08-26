@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "matrix2d.h": "c"
+        "matrix2d.h": "c",
+        "visualise.h": "c"
     }
 }
