@@ -22,7 +22,7 @@ void implicitSolver1D(Grid1D* grid, double dt, Matrix2D* A, double (*implicit)(G
         setElement(&K, ii - 1, 0, implicit(grid, ii, dt));
     }
 
-    Matrix2D inverse = invertLU(A, triFlag);
+    Matrix2D inverse = invertLU(A, triFlag, false);
 
     Matrix2D result = mutiply(&inverse, &K);
 
@@ -51,14 +51,14 @@ void explicitSolver2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, int, 
     freeGrid2D(&oldGrid);
 }
 
-void implicitSolver2D(Grid2D* grid, double dt, Matrix2D* A, double (*implicit)(Grid2D*, int, double)){
+void implicitSolver2D(Grid2D* grid, double dt, Matrix2D* A, double (*implicit)(Grid2D*, int, double), bool pentFlag){
     Matrix2D K = newMatrix((grid->columns - 2) * (grid->rows - 2), 1);
 
     for(int ii = 0; ii < K.rows; ii++){
         setElement(&K, ii, 0, implicit(grid, ii, dt));
     }
 
-    Matrix2D inverse = invertLU(A, false);
+    Matrix2D inverse = invertLU(A, false, pentFlag);
     Matrix2D result = mutiply(&inverse, &K);
 
     for(int ii = 1; ii < grid->rows - 2; ii++){

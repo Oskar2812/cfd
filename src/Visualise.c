@@ -238,7 +238,7 @@ void visualiseExplicit2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, in
 
     void visualiseImplicit2D(Grid2D* grid, double dt, double (*implicit)(Grid2D*, int, double), Matrix2D* A){
 
-    //bool triFlag = isTriDiagonal(A);
+    bool pentFlag = isPentDiagonal(A);
     SetTraceLogLevel(LOG_ERROR);
     InitWindow(800, 600, "Implicit PDE Solver 2D");
 
@@ -274,7 +274,7 @@ void visualiseExplicit2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, in
     while(!WindowShouldClose()){
         SetTargetFPS((int)fps);
         if(runFlag || stepFlag){
-            implicitSolver2D(grid, dt, A, implicit);
+            implicitSolver2D(grid, dt, A, implicit, pentFlag);
             stepFlag = false;
         }
         BeginDrawing();
