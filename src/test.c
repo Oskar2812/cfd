@@ -59,6 +59,7 @@ double heatEquationExplicit2D(Grid2D* grid, int i, int j, double dt){
 }
 
 int main(){
+    
     Grid2D grid = newGrid2D(10, 10, 0.1, 0.1);
 
     *getGridElement(&grid, 5, 5) = 1;

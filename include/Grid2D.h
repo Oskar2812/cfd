@@ -23,4 +23,8 @@ Grid2D copyGrid2D(Grid2D* grid);
 
 void printGrid2D(Grid2D* grid);
 
+double* fullGrid(Grid2D* grid);
+
+void realValueCoord(Grid2D* grid, int coord, int* i, int* j);
+
 #endif

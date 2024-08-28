@@ -36,4 +36,6 @@ Matrix2D triLUDecomposition(Matrix2D* A);
 
 bool isTriDiagonal(Matrix2D* A);
 
+Matrix2D add(Matrix2D* A, Matrix2D* B);
+
 #endif

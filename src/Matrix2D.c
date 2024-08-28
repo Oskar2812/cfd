@@ -51,6 +51,7 @@ void printMatrix(Matrix2D* mat){
         }
         printf("|\n");
     }
+    printf("\n");
 }
 
 void setElement(Matrix2D* mat, int i, int j, double val){
@@ -252,4 +253,21 @@ bool isTriDiagonal(Matrix2D* A){
     }
 
     return true;
+}
+
+Matrix2D add(Matrix2D* A, Matrix2D* B){
+    if(A->rows != B->rows || A->columns != B->columns){
+        printf("Error: Incompatible matrices to add");
+        exit(EXIT_FAILURE);
+    }
+
+    Matrix2D result = newMatrix(A->rows, B->columns);
+
+    for(int ii = 0; ii < A->rows; ii++){
+        for(int jj = 0; jj < A->columns; jj++){
+            *getElement(&result, ii, jj) = *getElement(A, ii, jj) + *getElement(B, ii, jj);
+        }
+    }
+
+    return result;
 }

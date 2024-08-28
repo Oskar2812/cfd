@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 int gridCoord(Grid2D* grid, int i, int j){
-    int coord = i * grid->columns + j;
+    int coord = (i - 1) * (grid->columns - 2) + j - 1;
     if(coord >= grid->columns * grid->rows){
         printf("Error: Invalid grid coordinate\n");
         exit(EXIT_FAILURE);
@@ -41,7 +41,7 @@ Grid2D newGrid2D(int rows, int columns, double dx, double dy){
     result.dx = dx;
     result.dy = dy;
 
-    result.values = (double*)malloc(sizeof(double) * rows * columns);
+    result.values = (double*)malloc(sizeof(double) * (rows - 2) * (columns - 2));
     result.boundaries = (double*)malloc(sizeof(double) * (2*rows + 2* (columns - 2)));
     if(result.values == NULL || result.boundaries == NULL){
         printf("Error: Failed to allocate memory for Grtid2D\n");
@@ -68,6 +68,9 @@ void setBoundaries(Grid2D* grid, double* boundaries){
 }
 
 double* getGridElement(Grid2D* grid, int i, int j){
+    if((i == 0 || i == grid->rows - 1) || (j == 0 || j == grid->columns - 1)){
+        return &grid->boundaries[boundaryCoord(grid, i, j)];
+    }
     return &grid->values[gridCoord(grid, i, j)];
 }
 
@@ -98,6 +101,7 @@ void printGrid2D(Grid2D* grid){
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void imposeBoundaries(Grid2D* grid){
@@ -110,5 +114,19 @@ void imposeBoundaries(Grid2D* grid){
         *getGridElement(grid, ii, grid->columns - 1) = grid->boundaries[boundaryCoord(grid, ii, grid->columns - 1)];
     }
     
+}
 
+double* fullGrid(Grid2D* grid){
+    double* result = (double*)malloc( sizeof(double) * grid->rows * grid->columns);
+    for(int ii = 0; ii <grid->rows; ii++){
+        for(int jj = 0; jj < grid->columns; jj++){
+            result[ii * grid->columns + jj] = *getGridElement(grid, ii, jj);
+        }
+    }
+    return result;
+}
+
+void realValueCoord(Grid2D* grid, int coord, int* i, int* j){
+    *i = (int) (coord / (grid->columns - 2)) + 1;
+    *j = (coord % (grid->columns - 2)) + 1;
 }

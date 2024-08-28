@@ -12,4 +12,6 @@ void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, in
 
 void visualiseExplicit2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, int, int, double));
 
+void visualiseImplicit2D(Grid2D* grid, double dt, double (*implicit)(Grid2D*, int, double), Matrix2D* A);
+
 #endif

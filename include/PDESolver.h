@@ -9,5 +9,6 @@ void explicitSolver1D(Grid1D* grid, double dt, double (*explicit)(Grid1D*, int, 
 void explicitSolver2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, int, int, double));
 
 void implicitSolver1D(Grid1D* grid, double dt, Matrix2D* A, double (*implicit)(Grid1D*, int, double), bool triFlag);
+void implicitSolver2D(Grid2D* grid, double dt, Matrix2D* A, double (*implicit)(Grid2D*, int, double));
 
 #endif
