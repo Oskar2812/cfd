@@ -115,10 +115,12 @@ void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, in
     Slider dtSlider = CreateSlider(30, 550, 100, 10, 0, dt*5, &dt, "dt");
     Slider fpsSlider = CreateSlider(150, 550, 100, 10, 0, 240, &fps, "Speed");
 
+    Matrix2D inverse = invertLU(A, triFlag, false);
+
     while(!WindowShouldClose()){
         SetTargetFPS((int)fps);
         if(runFlag || stepFlag){
-            implicitSolver1D(grid, dt, A, implicit, triFlag);
+            implicitSolver1D(grid, dt, &inverse, implicit, triFlag);
             stepFlag = false;
         }
         BeginDrawing();
@@ -154,6 +156,7 @@ void visualiseImplicit1D(Grid1D* grid, double dt, double (*implicit)(Grid1D*, in
     }
 
     CloseWindow();
+    freeMatrix(&inverse);
 
 }
 
@@ -271,10 +274,14 @@ void visualiseExplicit2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, in
     Slider dtSlider = CreateSlider(30, 550, 100, 10, 0, dt*5, &dt, "dt");
     Slider fpsSlider = CreateSlider(150, 550, 100, 10, 0, 240, &fps, "Speed");
 
+    printf("Inverting matrix...\n");
+    Matrix2D inverse = invertLU(A, false, pentFlag);
+    printf("Inversion complete!\n");
+
     while(!WindowShouldClose()){
         SetTargetFPS((int)fps);
         if(runFlag || stepFlag){
-            implicitSolver2D(grid, dt, A, implicit, pentFlag);
+            implicitSolver2D(grid, dt, &inverse, implicit, pentFlag);
             stepFlag = false;
         }
         BeginDrawing();
@@ -312,6 +319,7 @@ void visualiseExplicit2D(Grid2D* grid, double dt, double (*explicit)(Grid2D*, in
     }
 
     CloseWindow();
+    freeMatrix(&inverse);
 
 }
 
