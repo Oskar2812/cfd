@@ -51,6 +51,7 @@ void printMatrix(Matrix2D* mat){
         }
         printf("|\n");
     }
+    printf("\n");
 }
 
 void setElement(Matrix2D* mat, int i, int j, double val){
@@ -154,12 +155,14 @@ Matrix2D LUDecomposition(Matrix2D* A) {
     return result;
 }
 
-Matrix2D invertLU(Matrix2D* A, bool triFlag){
+Matrix2D invertLU(Matrix2D* A, bool triFlag, bool pentFlag){
 
     Matrix2D LU = newMatrix(A->rows, A->columns);
 
     if(triFlag){
         LU = triLUDecomposition(A);
+    } else if(pentFlag) {
+        LU = pentLUDecomposition(A);
     } else {
         LU = LUDecomposition(A);
     }
@@ -252,4 +255,93 @@ bool isTriDiagonal(Matrix2D* A){
     }
 
     return true;
+}
+
+bool isPentDiagonal(Matrix2D* A){
+    for(int ii = 0; ii < A->rows; ii++){
+        for(int jj = 0; jj < A->columns; jj++){
+            if(jj < ii - 2 && *getElement(A,ii,jj) != 0) return false;
+            if(jj > ii + 2 && *getElement(A, ii, jj) != 0) return false;
+        }
+    }
+
+    return true;
+}
+
+Matrix2D add(Matrix2D* A, Matrix2D* B){
+    if(A->rows != B->rows || A->columns != B->columns){
+        printf("Error: Incompatible matrices to add");
+        exit(EXIT_FAILURE);
+    }
+
+    Matrix2D result = newMatrix(A->rows, B->columns);
+
+    for(int ii = 0; ii < A->rows; ii++){
+        for(int jj = 0; jj < A->columns; jj++){
+            *getElement(&result, ii, jj) = *getElement(A, ii, jj) + *getElement(B, ii, jj);
+        }
+    }
+
+    return result;
+}
+
+Matrix2D pentLUDecomposition(Matrix2D* A) {
+    if (A->columns != A->rows) {
+        printf("Error: Matrix needs to be square for LU decomposition\n");
+        exit(EXIT_FAILURE);
+    }
+
+    int n = A->rows;
+    Matrix2D U = newMatrix(n, n);
+    Matrix2D L = newMatrix(n, n);
+
+    // Initialize L as an identity matrix
+    for (int i = 0; i < n; i++) {
+        setElement(&L, i, i, 1.0);
+    }
+
+    // Initialize first two rows of U
+    setElement(&U, 0, 0, *getElement(A, 0, 0));
+    setElement(&U, 0, 1, *getElement(A, 0, 1));
+    setElement(&U, 0, 2, *getElement(A, 0, 2));
+
+    setElement(&L, 1, 0, *getElement(A, 1, 0) / *getElement(&U, 0, 0));
+    setElement(&U, 1, 1, *getElement(A, 1, 1) - *getElement(&L, 1, 0) * *getElement(&U, 0, 1));
+    setElement(&U, 1, 2, *getElement(A, 1, 2) - *getElement(&L, 1, 0) * *getElement(&U, 0, 2));
+    setElement(&U, 1, 3, *getElement(A, 1, 3));
+
+    // Process the remaining rows
+    for (int ii = 2; ii < n; ii++) {
+        // Calculate L and U elements
+        setElement(&L, ii, ii - 2, *getElement(A, ii, ii - 2) / *getElement(&U, ii - 2, ii - 2));
+        setElement(&L, ii, ii - 1, (*getElement(A, ii, ii - 1) - *getElement(&L, ii, ii - 2) * *getElement(&U, ii - 2, ii - 1)) / *getElement(&U, ii - 1, ii - 1));
+        
+        setElement(&U, ii, ii, *getElement(A, ii, ii) - *getElement(&L, ii, ii - 2) * *getElement(&U, ii - 2, ii) - *getElement(&L, ii, ii - 1) * *getElement(&U, ii - 1, ii));
+        
+        if (ii < n - 1) {
+            setElement(&U, ii, ii + 1, *getElement(A, ii, ii + 1) - *getElement(&L, ii, ii - 1) * *getElement(&U, ii - 1, ii + 1));
+        }
+        
+        if (ii < n - 2) {
+            setElement(&U, ii, ii + 2, *getElement(A, ii, ii + 2));
+        }
+    }
+
+    // Combine L and U into a single matrix for the result
+    Matrix2D result = newMatrix(n, n);
+    for (int ii = 0; ii < n; ii++) {
+        for (int jj = 0; jj < n; jj++) {
+            if (ii <= jj) {
+                setElement(&result, ii, jj, *getElement(&U, ii, jj));
+            } else {
+                setElement(&result, ii, jj, *getElement(&L, ii, jj));
+            }
+        }
+    }
+
+    // Free temporary matrices
+    freeMatrix(&U);
+    freeMatrix(&L);
+
+    return result;
 }
